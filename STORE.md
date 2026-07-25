@@ -50,10 +50,10 @@ Display the signed-in user’s friends’ Beli scores on Google Maps restaurant 
 **Data use disclosures (typical checkboxes)**  
 Personally identifiable information / authentication info (tokens, user id). Certify limited use / no sale / no credit decisions, etc. as shown in the dashboard.
 
-**Privacy policy URL** (after push):
+**Privacy policy URL:**
 
 ```
-https://github.com/<you>/belimaps/blob/main/PRIVACY.md
+https://github.com/mergd/belimaps/blob/main/PRIVACY.md
 ```
 
 ## Package

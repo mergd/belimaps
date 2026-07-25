@@ -58,7 +58,7 @@ Screenshots: [`store/screenshots/`](store/screenshots/)
 
 After the repo is public, set the store privacy URL to:
 
-`https://github.com/<you>/belimaps/blob/main/PRIVACY.md`
+`https://github.com/mergd/belimaps/blob/main/PRIVACY.md`
 
 ## Notes
 
