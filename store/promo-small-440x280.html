@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body {
+        width: 440px;
+        height: 280px;
+        overflow: hidden;
+        background: #134f5c;
+      }
+      .tile {
+        width: 440px;
+        height: 280px;
+        background: #134f5c;
+        color: #f7f4ef;
+        position: relative;
+        padding: 56px 56px 56px 56px;
+      }
+      .pin {
+        position: absolute;
+        right: 56px;
+        bottom: 52px;
+        width: 44px;
+        height: 58px;
+        opacity: 0.88;
+      }
+      h1 {
+        font-family: "Playfair Display", Georgia, serif;
+        font-weight: 600;
+        font-size: 34px;
+        letter-spacing: -0.025em;
+        line-height: 1.05;
+        text-transform: lowercase;
+      }
+      p {
+        margin-top: 10px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: 400;
+        font-size: 13px;
+        letter-spacing: 0.01em;
+        color: rgba(247, 244, 239, 0.62);
+        line-height: 1.35;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tile">
+      <h1>beli maps</h1>
+      <p>Friends’ scores on Google Maps</p>
+      <svg class="pin" viewBox="0 0 64 86" aria-hidden="true">
+        <path
+          fill="#f7f4ef"
+          fill-rule="evenodd"
+          d="M32 0C14.3 0 0 14.5 0 32.5C0 50 16.5 72 32 86C47.5 72 64 50 64 32.5C64 14.5 49.7 0 32 0ZM32 18C39.7 18 46 24.3 46 32C46 39.7 39.7 46 32 46C24.3 46 18 39.7 18 32C18 24.3 24.3 18 32 18Z"
+        />
+      </svg>
+    </div>
+  </body>
+</html>

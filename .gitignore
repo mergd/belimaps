@@ -1,0 +1,22 @@
+# Dependencies
+node_modules
+.output
+.wxt
+dist
+
+# Local tooling
+.playwright-cli
+
+# Sensitive captures
+research/captures/
+*.har
+
+# Env / secrets
+.env
+.env.*
+.ap/
+
+# OS / editor
+.DS_Store
+*.log
+store/screenshots/overlay-2400x1600.png

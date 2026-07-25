@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Beli Maps">
+  <rect width="128" height="128" rx="26" fill="#134f5c"/>
+  <!-- Classic map-pin silhouette, optically centered -->
+  <path
+    fill="#f7f4ef"
+    d="
+      M64 18
+      C46.3 18 32 32.5 32 50.5
+      C32 68.2 48.5 90.5 64 110
+      C79.5 90.5 96 68.2 96 50.5
+      C96 32.5 81.7 18 64 18
+      Z
+      M64 38
+      C70.6 38 76 43.4 76 50
+      C76 56.6 70.6 62 64 62
+      C57.4 62 52 56.6 52 50
+      C52 43.4 57.4 38 64 38
+      Z
+    "
+    fill-rule="evenodd"
+  />
+</svg>
