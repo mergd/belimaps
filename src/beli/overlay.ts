@@ -92,7 +92,8 @@ export class OverlayService {
     coords?: string,
     address?: string,
   ): Promise<OverlayResult> {
-    if (!this.client.isAuthenticated()) {
+    // Refresh stale access tokens before treating the user as signed out.
+    if (!(await this.client.ensureFreshAuth())) {
       return {
         ok: false,
         error: "unauthenticated",

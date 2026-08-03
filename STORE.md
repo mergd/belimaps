@@ -56,12 +56,39 @@ Personally identifiable information / authentication info (tokens, user id). Cer
 https://github.com/mergd/belimaps/blob/main/PRIVACY.md
 ```
 
-## Package
+## Package / publish
 
 ```bash
 bun run zip
 # → .output/belimaps-*-chrome.zip
 ```
+
+### Chrome Web Store (CLI / CI)
+
+Uses the shared GCP service account `chrome-webstore@podads-wxuan.iam.gserviceaccount.com` and Chrome Web Store API v2.
+
+**Local** (via `ap`):
+
+```bash
+ap run -- bun run cws:status     # live / pending status
+ap run -- bun run cws:upload     # zip + upload only
+ap run -- bun run cws:publish    # zip + upload + submit for review
+```
+
+**CI:** push a version tag that matches `wxt.config.ts` `manifest.version`:
+
+```bash
+# bump version in wxt.config.ts first, commit, then:
+git tag v0.1.3
+git push origin v0.1.3
+```
+
+That runs `.github/workflows/publish-chrome.yml` (typecheck → zip → upload → publish). Manual runs are available from the Actions tab (`workflow_dispatch`, optional upload-only).
+
+Required GitHub secrets: `CWS_SERVICE_ACCOUNT_JSON`, `CWS_PUBLISHER_ID`, `CWS_EXTENSION_ID`.
+
+**Extension ID:** `fljjhnhomodeaaagknnpnkdcnaklaoam`  
+**Store:** https://chromewebstore.google.com/detail/fljjhnhomodeaaagknnpnkdcnaklaoam
 
 ## Assets
 

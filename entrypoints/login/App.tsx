@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { sendMessage } from "../../src/shared/messages";
 import { loadCachedUser } from "../../src/beli/session";
+import { formatPhoneInput } from "../../src/beli/phone";
 import type { LoggedInUser } from "../../src/beli/types";
 
 type Status = "loading" | "signed_out" | "signed_in";
@@ -32,7 +33,7 @@ function SessionSkeleton() {
 export function App() {
   const [status, setStatus] = useState<Status>("loading");
   const [user, setUser] = useState<LoggedInUser | null>(null);
-  const [phone, setPhone] = useState("+1");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -156,10 +157,10 @@ export function App() {
               Phone
               <input
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
                 inputMode="tel"
-                autoComplete="tel"
-                placeholder="+15551234567"
+                autoComplete="tel-national"
+                placeholder="(555) 123-4567"
                 required
                 autoFocus
               />

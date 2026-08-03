@@ -1,5 +1,6 @@
 import { BeliClient, BeliApiError } from "../src/beli/client";
 import { OverlayService } from "../src/beli/overlay";
+import { normalizePhone } from "../src/beli/phone";
 import { loadCachedUser } from "../src/beli/session";
 import type { Message, MessageResponse } from "../src/shared/messages";
 
@@ -57,12 +58,13 @@ async function handle(message: Message & { type: string }): Promise<MessageRespo
 
   switch (message.type) {
     case "AUTH_STATUS": {
-      return { ok: true, authenticated: client.isAuthenticated() };
+      const authenticated = await client.ensureFreshAuth();
+      return { ok: true, authenticated };
     }
     case "LOGIN": {
       const phone = normalizePhone(message.phone);
-      if (!/^\+\d{8,15}$/.test(phone)) {
-        return { ok: false, error: "Use international format, e.g. +15551234567" };
+      if (!phone) {
+        return { ok: false, error: "Enter a valid US phone number (or +country code)." };
       }
       try {
         const session = await client.login({ phone_no: phone, password: message.password });
@@ -82,20 +84,22 @@ async function handle(message: Message & { type: string }): Promise<MessageRespo
       return { ok: true, authenticated: false };
     }
     case "WHOAMI": {
-      if (!client.isAuthenticated()) {
+      if (!(await client.ensureFreshAuth())) {
         return { ok: true, authenticated: false };
-      }
-      const cached = await loadCachedUser();
-      if (cached) {
-        // Refresh profile in the background; UI can paint from cache immediately.
-        void client.me().catch(() => undefined);
-        return { ok: true, authenticated: true, user: cached };
       }
       try {
         const user = await client.me();
         return { ok: true, authenticated: true, user };
-      } catch {
-        return { ok: true, authenticated: false };
+      } catch (err) {
+        if (err instanceof BeliApiError && (err.status === 401 || err.status === 400)) {
+          return { ok: true, authenticated: false };
+        }
+        const cached = await loadCachedUser();
+        if (cached) return { ok: true, authenticated: true, user: cached };
+        return {
+          ok: false,
+          error: err instanceof Error ? err.message : String(err),
+        };
       }
     }
     case "GET_PLACE_OVERLAY": {
@@ -112,13 +116,9 @@ async function handle(message: Message & { type: string }): Promise<MessageRespo
     }
     case "OPEN_LOGIN": {
       await openLoginPage();
-      return { ok: true, authenticated: client.isAuthenticated() };
+      return { ok: true, authenticated: await client.ensureFreshAuth() };
     }
     default:
       return { ok: false, error: `Unknown message ${(message as Message).type}` };
   }
-}
-
-function normalizePhone(raw: string): string {
-  return raw.replace(/[\s()-]/g, "");
 }

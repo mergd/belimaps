@@ -21,12 +21,15 @@ bun run build
 
 Dev loop: `bun run dev` (WXT reloads the extension).
 
+Store updates: bump `manifest.version` in `wxt.config.ts`, tag `vX.Y.Z`, push — GitHub Actions publishes to the Chrome Web Store (see [STORE.md](STORE.md)).
+
 ## Auth
 
 - Login is a dedicated extension page (`login.html`) opened from the toolbar icon or the overlay “Sign in” link
 - Only JWT `access` / `refresh` / `userId` are stored in `chrome.storage.local`
 - Password is never persisted
-- Access tokens refresh automatically (~20 minutes)
+- Access tokens refresh automatically when stale (~20 minutes); overlay/login validate via refresh before asking you to sign in again
+- Phone login accepts US national numbers (+1 implied) or full `+` international via `libphonenumber-js`
 ## How overlay data works
 
 1. Detect `/maps/place/…` and extract a Google `ChIJ…` place id

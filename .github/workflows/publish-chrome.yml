@@ -1,0 +1,59 @@
+name: Publish Chrome Web Store
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      upload_only:
+        description: "Upload without submitting for publish/review"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run compile
+
+      - name: Assert tag matches manifest version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          MANIFEST_VERSION=$(bun -e 'const m = await import("./wxt.config.ts"); console.log(m.default.manifest.version)')
+          echo "tag=$TAG manifest=$MANIFEST_VERSION"
+          if [ "$TAG" != "$MANIFEST_VERSION" ]; then
+            echo "::error::Tag v$TAG must match wxt.config.ts manifest.version ($MANIFEST_VERSION). Bump the manifest, commit, then retag."
+            exit 1
+          fi
+
+      - name: Build zip
+        run: bun run zip
+
+      - name: Upload / publish to Chrome Web Store
+        env:
+          CWS_SERVICE_ACCOUNT_JSON: ${{ secrets.CWS_SERVICE_ACCOUNT_JSON }}
+          CWS_PUBLISHER_ID: ${{ secrets.CWS_PUBLISHER_ID }}
+          CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
+        run: |
+          ARGS=(--skip-zip)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.upload_only }}" = "true" ]; then
+            ARGS+=(--upload-only)
+          fi
+          bun run scripts/cws-publish.ts "${ARGS[@]}"

@@ -161,6 +161,28 @@ export class BeliClient {
     return Boolean(this.session?.access || this.session?.refresh);
   }
 
+  /**
+   * Ensure we have a usable access token — refresh if missing/stale.
+   * Returns false only when there is no session or refresh was rejected.
+   * Transient network errors still return true if tokens exist so callers
+   * aren't bounced to "Sign in" on a blip.
+   */
+  async ensureFreshAuth(): Promise<boolean> {
+    if (!this.session) this.session = await loadSession();
+    if (!this.session?.refresh && !this.session?.access) {
+      return false;
+    }
+    try {
+      await this.ensureAuth();
+      return true;
+    } catch (err) {
+      if (err instanceof BeliApiError && (err.status === 401 || err.status === 400)) {
+        return false;
+      }
+      return Boolean(this.session?.access || this.session?.refresh);
+    }
+  }
+
   async login(creds: LoginRequest): Promise<Session> {
     const tok = await this.rawRequest<TokenPair>("ONBOARD", "/api/token/", {
       method: "POST",
